@@ -1,3 +1,6 @@
+@@ -1,23 +1,74 @@
+// Very simple offline cache for PWA
+const CACHE = 'exin-cache-v1';
 // Expenses & Income Tracker Service Worker (v5)
 // Auto-update strategy with versioned cache + skipWaiting + clients.claim
 
@@ -8,11 +11,14 @@ const CACHE = 'exin-cache-v5';
 const ASSETS = [
   './',
   './index.html',
+  './manifest.webmanifest'
   './manifest.webmanifest',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
+self.addEventListener('install', e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,6 +27,8 @@ self.addEventListener('install', (event) => {
   // Activate new SW immediately
   self.skipWaiting();
 });
+self.addEventListener('activate', e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -31,6 +39,14 @@ self.addEventListener('activate', (event) => {
     ).then(() => self.clients.claim())
   );
 });
+self.addEventListener('fetch', e=>{
+  const req=e.request;
+  e.respondWith(
+    caches.match(req).then(cached=> cached || fetch(req).then(res=>{
+      const copy = res.clone();
+      caches.open(CACHE).then(c=>c.put(req, copy)).catch(()=>{});
+      return res;
+    }).catch(()=>caches.match('./index.html')))
 
 // Strategy:
 // - For HTML navigations: Network-first (get latest index.html), fallback to cache offline
