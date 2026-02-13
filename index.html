@@ -1,341 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=\"en\">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset=\"utf-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">
   <title>Expenses & Income Tracker</title>
   <!-- PWA / iOS meta -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Ex-In Tracker">
-  <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#3b82f6">
+  <meta name=\"apple-mobile-web-app-capable\" content=\"yes\">
+  <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">
+  <meta name=\"apple-mobile-web-app-title\" content=\"Ex-In Tracker\">
+  <link rel=\"apple-touch-icon\" href=\"icons/icon-180.png\">
+  <link rel=\"manifest\" href=\"manifest.webmanifest\">
+  <meta name=\"theme-color\" content=\"#3b82f6\">
   <style>
-  :root {--primary:#3b82f6;--primary-dark:#2563eb;--primary-light:#dbeafe;--secondary:#10b981;--secondary-dark:#059669;--danger:#ef4444;--danger-dark:#dc2626;--success:#10b981;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;--white:#fff}
+  :root { --primary:#3b82f6; --primary-dark:#2563eb; --primary-light:#dbeafe; --secondary:#10b981; --secondary-dark:#059669; --danger:#ef4444; --danger-dark:#dc2626; --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db; --gray-400:#9ca3af; --gray-500:#6b7280; --gray-600:#4b5563; --gray-700:#374151; --gray-800:#1f2937; --gray-900:#111827; --white:#fff; --radius:16px; --space:16px; --space-lg:24px; }
   *{box-sizing:border-box}
-  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,var(--gray-50) 0%,var(--primary-light) 100%);margin:0;padding:20px;color:var(--gray-800);line-height:1.6;min-height:100vh}
-  h1{margin:0 0 24px;font-size:2.2rem;font-weight:700;color:var(--gray-900);text-align:center}
-  h2{margin:0 0 16px;font-size:1.45rem;font-weight:600;display:flex;gap:8px;align-items:center}
-  .container{max-width:1200px;margin:0 auto}
-  .card{background:var(--white);border-radius:16px;padding:24px;margin-bottom:24px;border:1px solid var(--gray-200);box-shadow:0 10px 15px -3px rgba(0,0,0,.07)}
-  .row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
-  .col{flex:1;min-width:220px}
-  label{display:block;font-size:14px;font-weight:500;margin-bottom:6px;color:var(--gray-700)}
-  input,select,button{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--gray-200);font-size:14px;background:#fff}
+  html{-webkit-text-size-adjust:100%;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;margin:0;color:var(--gray-800);line-height:1.6;background:linear-gradient(135deg,var(--gray-50) 0%, var(--primary-light) 100%);padding:16px;min-height:100vh}
+  @supports(height: 100dvh){ body{ min-height:100dvh; } }
+  h1{margin:0 0 var(--space-lg);font-weight:800;color:var(--gray-900);text-align:center;font-size:clamp(1.4rem,2.5vw + 1rem,2.2rem)}
+  h2{margin:0 0 var(--space);font-size:clamp(1.05rem,1.2vw + .8rem,1.45rem);font-weight:700;display:flex;gap:8px;align-items:center}
+  .container{max-width:1100px;margin:0 auto}
+  .card{background:var(--white);border-radius:var(--radius);padding:var(--space-lg);margin-bottom:var(--space-lg);border:1px solid var(--gray-200);box-shadow:0 10px 15px -3px rgba(0,0,0,.07)}
+  .row{display:flex;gap:var(--space);flex-wrap:wrap;margin-bottom:var(--space)}
+  .col{flex:1 1 260px;min-width:220px}
+  label{display:block;font-size:.9rem;font-weight:600;margin-bottom:6px;color:var(--gray-700)}
+  input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--gray-200);background:var(--white);font-size:16px}
   input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-  button{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;border:none;cursor:pointer;font-weight:600}
-  button.small{padding:8px 12px;border-radius:8px;font-size:12px}
-  .btn-danger{background:linear-gradient(135deg,var(--danger) 0%,var(--danger-dark) 100%)}
-  .btn-ok{background:linear-gradient(135deg,var(--success) 0%,var(--secondary-dark) 100%)}
-  .muted{color:var(--gray-500);font-size:13px}
-  .table-wrap{max-height:350px;overflow:auto;border-radius:12px;border:2px solid var(--gray-200);background:#fff}
-  table{width:100%;border-collapse:collapse;text-align:center;white-space:nowrap;font-size:14px}
-  th,td{padding:12px 16px;border:1px solid var(--gray-200)}
-  th{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;position:sticky;top:0;font-weight:600;font-size:12px}
-  .total-amount{text-align:right;margin-top:16px;font-weight:700;font-size:18px;color:var(--primary)}
-  .login-section{background:linear-gradient(135deg,var(--gray-50) 0%,var(--primary-light) 100%);padding:20px;border-radius:12px;border:2px solid var(--gray-200)}
-  hr{border:none;height:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));margin:20px 0}
-  @media (max-width:768px){.col{min-width:auto} th,td{font-size:12px}}
+  button{cursor:pointer;font-weight:700;color:#fff;border:none;background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%)}
+  button.small{padding:8px 10px;border-radius:10px;font-size:.85rem}
+  .btn-danger{background:linear-gradient(135deg,var(--danger) 0%, var(--danger-dark) 100%)}
+  .btn-ok{background:linear-gradient(135deg,var(--secondary) 0%, var(--secondary-dark) 100%)}
+  .muted{color:var(--gray-500);font-size:.9rem}
+  .table-wrap{max-height:370px;overflow:auto;border-radius:12px;border:2px solid var(--gray-200);background:#fff}
+  table{width:100%;border-collapse:collapse;text-align:center;table-layout:fixed;font-size:.95rem}
+  th,td{padding:12px 10px;border:1px solid var(--gray-200);vertical-align:middle;word-break:break-word}
+  th{background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%);color:#fff;position:sticky;top:0;z-index:1;font-size:.8rem;letter-spacing:.3px}
+  .total-amount{text-align:right;margin-top:12px;font-weight:800;font-size:1.05rem;color:var(--primary)}
+  .login-section{background:linear-gradient(135deg,var(--gray-50) 0%, var(--primary-light) 100%);padding:var(--space);border-radius:12px;border:2px solid var(--gray-200)}
+  hr{border:none;height:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));margin:18px 0}
+  @media (max-width:768px){body{padding:12px}.col{flex:1 1 100%;min-width:unset}table{font-size:.9rem}th,td{padding:10px 8px}}
+  @media (max-width:480px){.card{padding:14px}.table-wrap{border-width:1px}th{font-size:.75rem}}
+  *{-webkit-tap-highlight-color:rgba(0,0,0,0)}
   </style>
 </head>
 <body>
-<div class="container">
+<div class=\"container\">
   <h1>💰 Expenses & Income Tracker</h1>
-
-  <!-- Add entry -->
-  <div class="card" id="addCard">
+  <div class=\"card\" id=\"addCard\">
     <h2>➕ Add Expense / Income</h2>
-    <form id="addForm">
-      <div class="row">
-        <div class="col">
+    <form id=\"addForm\">
+      <div class=\"row\">
+        <div class=\"col\">
           <label>Type</label>
-          <select id="entryType" required>
-            <option value="" selected>-- Select Type --</option>
-            <option value="expense">💸 Expense</option>
-            <option value="income">💵 Income</option>
+          <select id=\"entryType\" required>
+            <option value=\"\" selected>-- Select Type --</option>
+            <option value=\"expense\">💸 Expense</option>
+            <option value=\"income\">💵 Income</option>
           </select>
         </div>
-        <div class="col">
+        <div class=\"col\">
           <label>Date</label>
-          <input type="date" id="entryDate" required>
+          <input type=\"date\" id=\"entryDate\" required>
         </div>
-        <div class="col">
+        <div class=\"col\">
           <label>Amount (₱)</label>
-          <input type="number" id="entryAmount" step="0.01" min="0" required placeholder="0.00">
+          <input type=\"number\" id=\"entryAmount\" step=\"0.01\" min=\"0\" required placeholder=\"0.00\">
         </div>
       </div>
       <label>Description</label>
-      <input type="text" id="entryDesc" placeholder="e.g. Groceries, Salary, Transportation" required>
-      <div style="margin-top:16px;display:flex;gap:12px">
-        <button type="submit">💾 Add Entry</button>
+      <input type=\"text\" id=\"entryDesc\" placeholder=\"e.g. Groceries, Salary, Transportation\" required>
+      <div style=\"margin-top:var(--space);display:flex;gap:12px;flex-wrap:wrap\">
+        <button type=\"submit\">💾 Add Entry</button>
       </div>
-      <div class="muted" style="margin-top:12px">📱 Data automatically saves in your device (localStorage). Works offline as a PWA after Add to Home Screen.</div>
+      <div class=\"muted\" style=\"margin-top:10px\">📱 Saves to your device (localStorage). Works offline as a PWA after Add to Home Screen.</div>
     </form>
   </div>
-
-  <!-- Latest cards -->
-  <div class="card">
-    <h2>🔴 Latest Expense</h2>
-    <div id="latestExpense" class="muted">No expense added yet.</div>
-  </div>
-  <div class="card">
-    <h2>🟢 Latest Income</h2>
-    <div id="latestIncome" class="muted">No income added yet.</div>
-  </div>
-
-  <!-- Expenses Summary -->
-  <div class="card">
+  <div class=\"card\"><h2>🔴 Latest Expense</h2><div id=\"latestExpense\" class=\"muted\">No expense added yet.</div></div>
+  <div class=\"card\"><h2>🟢 Latest Income</h2><div id=\"latestIncome\" class=\"muted\">No income added yet.</div></div>
+  <div class=\"card\">
     <h2>📊 Expenses Summary</h2>
-    <div id="expensesLogin" class="login-section">
-      <div class="row">
-        <div class="col"><label>👤 Username</label><input id="expUsername" type="text" placeholder="admin"></div>
-        <div class="col"><label>🔒 Password</label><input id="expPassword" type="password" placeholder="••••••••"></div>
-        <div style="flex-basis:180px"><label> </label><button type="button" onclick="loginSection('expenses')">🚀 Login</button></div>
+    <div id=\"expensesLogin\" class=\"login-section\">
+      <div class=\"row\">
+        <div class=\"col\"><label>👤 Username</label><input id=\"expUsername\" type=\"text\" placeholder=\"admin\"></div>
+        <div class=\"col\"><label>🔒 Password</label><input id=\"expPassword\" type=\"password\" placeholder=\"••••••••\"></div>
+        <div style=\"flex-basis:180px\"><label> </label><button type=\"button\" onclick=\"loginSection('expenses')\">🚀 Login</button></div>
       </div>
-      <div id="expLoginMsg" class="error" style="color:#ef4444"></div>
+      <div id=\"expLoginMsg\" class=\"error\" style=\"color:#ef4444\"></div>
     </div>
-    <div id="expensesContent" style="display:none">
-      <div class="row" style="margin-bottom:8px">
-        <div class="col"><label>📅 Start date</label><input id="expStart" type="date"></div>
-        <div class="col"><label>📅 End date</label><input id="expEnd" type="date"></div>
-        <div style="min-width:140px;align-self:end"><button type="button" onclick="applyFilter('expenses')">🔍 Filter</button></div>
+    <div id=\"expensesContent\" style=\"display:none\">
+      <div class=\"row\" style=\"margin-bottom:8px\">
+        <div class=\"col\"><label>📅 Start date</label><input id=\"expStart\" type=\"date\"></div>
+        <div class=\"col\"><label>📅 End date</label><input id=\"expEnd\" type=\"date\"></div>
+        <div style=\"min-width:140px;align-self:end\"><button type=\"button\" onclick=\"applyFilter('expenses')\">🔍 Filter</button></div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-        <div class="muted">📋 Showing expenses (filtered)</div>
-        <div style="display:flex;gap:8px">
-          <button class="small btn-ok" onclick="copyTable('expenses')">📋 Copy Table</button>
-        </div>
+      <div style=\"display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px\">
+        <div class=\"muted\">📋 Showing expenses (filtered)</div>
+        <div style=\"display:flex;gap:8px\"><button class=\"small btn-ok\" onclick=\"copyTable('expenses')\">📋 Copy Table</button></div>
       </div>
-      <div class="table-wrap" style="margin-top:12px">
-        <table id="expensesTable"><thead><tr><th>📅 Date</th><th>📝 Description</th><th>💰 Amount</th></tr></thead><tbody></tbody></table>
-      </div>
-      <div class="total-amount">Total: ₱<span id="expensesTotal">0.00</span></div>
-
+      <div class=\"table-wrap\" style=\"margin-top:12px\"><table id=\"expensesTable\"><thead><tr><th>📅 Date</th><th>📝 Description</th><th>💰 Amount</th></tr></thead><tbody></tbody></table></div>
+      <div class=\"total-amount\">Total: ₱<span id=\"expensesTotal\">0.00</span></div>
       <hr>
       <h3>📈 Yearly Expenses</h3>
-      <div class="row" style="margin-bottom:8px">
-        <div class="col" style="max-width:200px"><label>🗓️ Filter by year</label><input id="expYear" type="number" placeholder="e.g. 2026"></div>
-        <div style="min-width:160px;align-self:end;display:flex;gap:8px"><button type="button" onclick="applyYear('expenses')">🔍 Filter</button><button type="button" class="small" onclick="clearYear('expenses')">🔄 Clear</button></div>
+      <div class=\"row\" style=\"margin-bottom:8px\">
+        <div class=\"col\" style=\"max-width:220px\"><label>🗓️ Filter by year</label><input id=\"expYear\" type=\"number\" placeholder=\"e.g. 2026\"></div>
+        <div style=\"min-width:160px;align-self:end;display:flex;gap:8px\"><button type=\"button\" onclick=\"applyYear('expenses')\">🔍 Filter</button><button type=\"button\" class=\"small\" onclick=\"clearYear('expenses')\">🔄 Clear</button></div>
       </div>
-      <div class="table-wrap"><table id="expensesYearly"><thead><tr><th>📅 Month</th><th>💰 Total</th><th>📊 Count</th><th>📈 Average</th></tr></thead><tbody></tbody></table></div>
+      <div class=\"table-wrap\"><table id=\"expensesYearly\"><thead><tr><th>📅 Month</th><th>💰 Total</th><th>📊 Count</th><th>📈 Average</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
-
-  <!-- Income Summary -->
-  <div class="card">
+  <div class=\"card\">
     <h2>📈 Income Summary</h2>
-    <div id="incomeLogin" class="login-section">
-      <div class="row">
-        <div class="col"><label>👤 Username</label><input id="incUsername" type="text" placeholder="admin"></div>
-        <div class="col"><label>🔒 Password</label><input id="incPassword" type="password" placeholder="••••••••"></div>
-        <div style="flex-basis:180px"><label> </label><button type="button" onclick="loginSection('income')">🚀 Login</button></div>
+    <div id=\"incomeLogin\" class=\"login-section\">
+      <div class=\"row\">
+        <div class=\"col\"><label>👤 Username</label><input id=\"incUsername\" type=\"text\" placeholder=\"admin\"></div>
+        <div class=\"col\"><label>🔒 Password</label><input id=\"incPassword\" type=\"password\" placeholder=\"••••••••\"></div>
+        <div style=\"flex-basis:180px\"><label> </label><button type=\"button\" onclick=\"loginSection('income')\">🚀 Login</button></div>
       </div>
-      <div id="incLoginMsg" class="error" style="color:#ef4444"></div>
+      <div id=\"incLoginMsg\" class=\"error\" style=\"color:#ef4444\"></div>
     </div>
-    <div id="incomeContent" style="display:none">
-      <div class="row" style="margin-bottom:8px">
-        <div class="col"><label>📅 Start date</label><input id="incStart" type="date"></div>
-        <div class="col"><label>📅 End date</label><input id="incEnd" type="date"></div>
-        <div style="min-width:140px;align-self:end"><button type="button" onclick="applyFilter('income')">🔍 Filter</button></div>
+    <div id=\"incomeContent\" style=\"display:none\">
+      <div class=\"row\" style=\"margin-bottom:8px\">
+        <div class=\"col\"><label>📅 Start date</label><input id=\"incStart\" type=\"date\"></div>
+        <div class=\"col\"><label>📅 End date</label><input id=\"incEnd\" type=\"date\"></div>
+        <div style=\"min-width:140px;align-self:end\"><button type=\"button\" onclick=\"applyFilter('income')\">🔍 Filter</button></div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-        <div class="muted">📋 Showing incomes (filtered)</div>
-        <div style="display:flex;gap:8px"><button class="small btn-ok" onclick="copyTable('income')">📋 Copy Table</button></div>
+      <div style=\"display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px\">
+        <div class=\"muted\">📋 Showing incomes (filtered)</div>
+        <div style=\"display:flex;gap:8px\"><button class=\"small btn-ok\" onclick=\"copyTable('income')\">📋 Copy Table</button></div>
       </div>
-      <div class="table-wrap" style="margin-top:12px">
-        <table id="incomeTable"><thead><tr><th>📅 Date</th><th>📝 Description</th><th>💰 Amount</th></tr></thead><tbody></tbody></table>
-      </div>
-      <div class="total-amount">Total: ₱<span id="incomeTotal">0.00</span></div>
-
+      <div class=\"table-wrap\" style=\"margin-top:12px\"><table id=\"incomeTable\"><thead><tr><th>📅 Date</th><th>📝 Description</th><th>💰 Amount</th></tr></thead><tbody></tbody></table></div>
+      <div class=\"total-amount\">Total: ₱<span id=\"incomeTotal\">0.00</span></div>
       <hr>
       <h3>📈 Yearly Income</h3>
-      <div class="row" style="margin-bottom:8px">
-        <div class="col" style="max-width:200px"><label>🗓️ Filter by year</label><input id="incYear" type="number" placeholder="e.g. 2026"></div>
-        <div style="min-width:160px;align-self:end;display:flex;gap:8px"><button type="button" onclick="applyYear('income')">🔍 Filter</button><button type="button" class="small" onclick="clearYear('income')">🔄 Clear</button></div>
+      <div class=\"row\" style=\"margin-bottom:8px\">
+        <div class=\"col\" style=\"max-width:220px\"><label>🗓️ Filter by year</label><input id=\"incYear\" type=\"number\" placeholder=\"e.g. 2026\"></div>
+        <div style=\"min-width:160px;align-self:end;display:flex;gap:8px\"><button type=\"button\" onclick=\"applyYear('income')\">🔍 Filter</button><button type=\"button\" class=\"small\" onclick=\"clearYear('income')\">🔄 Clear</button></div>
       </div>
-      <div class="table-wrap"><table id="incomeYearly"><thead><tr><th>📅 Month</th><th>💰 Total</th><th>📊 Count</th><th>📈 Average</th></tr></thead><tbody></tbody></table></div>
+      <div class=\"table-wrap\"><table id=\"incomeYearly\"><thead><tr><th>📅 Month</th><th>💰 Total</th><th>📊 Count</th><th>📈 Average</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 </div>
-
 <script>
-// Storage keys
 const EXP_KEY='tracker_expenses_v2';
 const INC_KEY='tracker_incomes_v2';
 const PASS_KEY_EXP='tracker_exp_pass_v2';
 const PASS_KEY_INC='tracker_inc_pass_v2';
-
-let expenses = JSON.parse(localStorage.getItem(EXP_KEY) || '[]');
-let incomes  = JSON.parse(localStorage.getItem(INC_KEY) || '[]');
-let credExp  = JSON.parse(localStorage.getItem(PASS_KEY_EXP) || JSON.stringify({user:'admin',pass:'2121'}));
-let credInc  = JSON.parse(localStorage.getItem(PASS_KEY_INC) || JSON.stringify({user:'admin',pass:'2121'}));
-
-document.getElementById('expUsername').value = credExp.user;
-document.getElementById('incUsername').value = credInc.user;
-
-// Default date = today
-const d=document.getElementById('entryDate'); if(d){ d.value = new Date().toISOString().split('T')[0]; }
-
-function saveAll(){
-  localStorage.setItem(EXP_KEY, JSON.stringify(expenses));
-  localStorage.setItem(INC_KEY, JSON.stringify(incomes));
-  localStorage.setItem(PASS_KEY_EXP, JSON.stringify(credExp));
-  localStorage.setItem(PASS_KEY_INC, JSON.stringify(credInc));
-}
-
-function renderLatest(){
-  const expEl = document.getElementById('latestExpense');
-  const incEl = document.getElementById('latestIncome');
-  if(expenses.length){ const last = expenses[expenses.length-1]; expEl.innerHTML = `<strong>${last.date}</strong> • ${last.desc} • <strong style="color:#ef4444">₱${Number(last.amount).toFixed(2)}</strong>`; }
-  else expEl.textContent = 'No expense added yet.';
-  if(incomes.length){ const last = incomes[incomes.length-1]; incEl.innerHTML = `<strong>${last.date}</strong> • ${last.desc} • <strong style="color:#10b981">₱${Number(last.amount).toFixed(2)}</strong>`; }
-  else incEl.textContent = 'No income added yet.';
-}
-
-// Add entry handler
-const form = document.getElementById('addForm');
-form.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const type   = document.getElementById('entryType').value;
-  const date   = document.getElementById('entryDate').value;
-  const amount = parseFloat(document.getElementById('entryAmount').value);
-  const desc   = document.getElementById('entryDesc').value.trim();
-  if(!type){ alert('Select a type first.'); return; }
-  if(!date || !desc || isNaN(amount)){ alert('Fill valid fields.'); return; }
-  (type==='expense' ? expenses : incomes).push({date, desc, amount});
-  saveAll(); renderLatest();
-  if(document.getElementById('expensesContent').style.display !== 'none') applyFilter('expenses');
-  if(document.getElementById('incomeContent').style.display   !== 'none') applyFilter('income');
-  applyYear('expenses'); applyYear('income');
-  form.reset(); document.getElementById('entryType').value=''; document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-});
-
-function loginSection(section){
-  if(section==='expenses'){
-    const u=document.getElementById('expUsername').value.trim();
-    const p=document.getElementById('expPassword').value;
-    if(u===credExp.user && p===credExp.pass){
-      document.getElementById('expensesLogin').style.display='none';
-      document.getElementById('expensesContent').style.display='block';
-      applyFilter('expenses'); applyYear('expenses');
-      document.getElementById('expLoginMsg').textContent='';
-    } else document.getElementById('expLoginMsg').textContent='❌ Wrong credentials';
-  } else {
-    const u=document.getElementById('incUsername').value.trim();
-    const p=document.getElementById('incPassword').value;
-    if(u===credInc.user && p===credInc.pass){
-      document.getElementById('incomeLogin').style.display='none';
-      document.getElementById('incomeContent').style.display='block';
-      applyFilter('income'); applyYear('income');
-      document.getElementById('incLoginMsg').textContent='';
-    } else document.getElementById('incLoginMsg').textContent='❌ Wrong credentials';
-  }
-}
-
-function applyFilter(section){
-  if(section==='expenses'){
-    const start=document.getElementById('expStart').value || null;
-    const end  =document.getElementById('expEnd').value   || null;
-    renderSummaryTable('expenses', start, end);
-  } else {
-    const start=document.getElementById('incStart').value || null;
-    const end  =document.getElementById('incEnd').value   || null;
-    renderSummaryTable('income', start, end);
-  }
-}
-
-function renderSummaryTable(section, start=null, end=null){
-  const tableBody = document.querySelector(`#${section}Table tbody`);
-  tableBody.innerHTML='';
-  const list = (section==='expenses'? expenses : incomes);
-  let total=0;
-  const filtered = list.filter(it=>{
-    if(start && it.date < start) return false;
-    if(end   && it.date > end)   return false;
-    return true;
-  });
-  filtered.forEach(it=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML = `<td><strong>${it.date}</strong></td><td>${escapeHtml(it.desc)}</td><td><strong>₱${Number(it.amount).toFixed(2)}</strong></td>`;
-    tableBody.appendChild(tr);
-    total += Number(it.amount);
-  });
-  const totalId = (section==='expenses' ? 'expensesTotal' : 'incomeTotal');
-  document.getElementById(totalId).textContent = Number(total).toFixed(2);
-}
-
-function applyYear(section){
-  const yearInput = (section==='expenses' ? document.getElementById('expYear').value : document.getElementById('incYear').value);
-  renderYearly(section, yearInput ? String(yearInput) : null);
-}
-
-function clearYear(section){
-  if(section==='expenses') document.getElementById('expYear').value = '';
-  else document.getElementById('incYear').value = '';
-  renderYearly(section, null);
-}
-
-function renderYearly(section, yearFilter=null){
-  const tbody = document.querySelector(`#${section}Yearly tbody`);
-  tbody.innerHTML='';
-  const list = (section==='expenses'? expenses : incomes);
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  let grandTotal=0, grandCount=0;
-  months.forEach((m,idx)=>{
-    const mm=String(idx+1).padStart(2,'0');
-    const filtered = list.filter(it=>{
-      const [y,mo] = it.date.split('-');
-      if(yearFilter && y !== String(yearFilter)) return false;
-      return mo === mm;
-    });
-    const total = filtered.reduce((s,it)=> s + Number(it.amount), 0);
-    const count = filtered.length;
-    grandTotal += total; grandCount += count;
-    const tr=document.createElement('tr');
-    tr.innerHTML = `<td><strong>${m}</strong></td><td><strong>₱${Number(total).toFixed(2)}</strong></td><td>${count}</td><td>₱${Number(count? total/count : 0).toFixed(2)}</td>`;
-    tbody.appendChild(tr);
-  });
-  const trTotal=document.createElement('tr');
-  trTotal.style.fontWeight='700'; trTotal.style.background='linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 20%)'; trTotal.style.color='#fff';
-  trTotal.innerHTML = `<td><strong>🎯 TOTAL</strong></td><td><strong>₱${Number(grandTotal).toFixed(2)}</strong></td><td><strong>${grandCount}</strong></td><td><strong>₱${Number(grandCount? grandTotal/grandCount : 0).toFixed(2)}</strong></td>`;
-  tbody.appendChild(trTotal);
-}
-
-function copyTable(section){
-  const wrapId = (section==='expenses' ? 'expensesTable' : 'incomeTable');
-  const table = document.getElementById(wrapId);
-  const rows = table.querySelectorAll('tr');
-  const lines = [];
-  rows.forEach(r=>{
-    const cols=r.querySelectorAll('th,td');
-    const vals=[];
-    cols.forEach(c=>{
-      let txt=c.innerText.replace(/₱/g,'').trim();
-      txt = txt.replace(/\"/g,'"');
-      vals.push('"'+txt.replace(/"/g,'""')+'"');
-    });
-    if(vals.length) lines.push(vals.join('\t'));
-  });
-  navigator.clipboard.writeText(lines.join('\n')).then(()=> alert('✅ Table copied! Paste into Excel/Sheets.'));
-}
-
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));}
-
-// Initial render
-renderLatest();
-renderSummaryTable('expenses');
-renderSummaryTable('income');
-renderYearly('expenses');
-renderYearly('income');
-
-// Expose
-window.loginSection=loginSection; window.applyFilter=applyFilter; window.applyYear=applyYear; window.clearYear=clearYear; window.copyTable=copyTable;
-
-// Register service worker
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
-}
+let expenses=JSON.parse(localStorage.getItem(EXP_KEY)||'[]');
+let incomes=JSON.parse(localStorage.getItem(INC_KEY)||'[]');
+let credExp=JSON.parse(localStorage.getItem(PASS_KEY_EXP)||JSON.stringify({user:'admin',pass:'2121'}));
+let credInc=JSON.parse(localStorage.getItem(PASS_KEY_INC)||JSON.stringify({user:'admin',pass:'2121'}));
+document.getElementById('expUsername').value=credExp.user;document.getElementById('incUsername').value=credInc.user;
+const d=document.getElementById('entryDate'); if(d){ d.value=new Date().toISOString().split('T')[0]; }
+function saveAll(){localStorage.setItem(EXP_KEY,JSON.stringify(expenses));localStorage.setItem(INC_KEY,JSON.stringify(incomes));localStorage.setItem(PASS_KEY_EXP,JSON.stringify(credExp));localStorage.setItem(PASS_KEY_INC,JSON.stringify(credInc));}
+function renderLatest(){const expEl=document.getElementById('latestExpense');const incEl=document.getElementById('latestIncome');if(expenses.length){const last=expenses[expenses.length-1];expEl.innerHTML=`<strong>${last.date}</strong> • ${last.desc} • <strong style=\"color:#ef4444\">₱${Number(last.amount).toFixed(2)}</strong>`;} else expEl.textContent='No expense added yet.';if(incomes.length){const last=incomes[incomes.length-1];incEl.innerHTML=`<strong>${last.date}</strong> • ${last.desc} • <strong style=\"color:#10b981\">₱${Number(last.amount).toFixed(2)}</strong>`;} else incEl.textContent='No income added yet.';}
+const form=document.getElementById('addForm');form.addEventListener('submit',(e)=>{e.preventDefault();const type=document.getElementById('entryType').value;const date=document.getElementById('entryDate').value;const amount=parseFloat(document.getElementById('entryAmount').value);const desc=document.getElementById('entryDesc').value.trim();if(!type){alert('Select a type first.');return}if(!date||!desc||isNaN(amount)){alert('Fill valid fields.');return}(type==='expense'?expenses:incomes).push({date,desc,amount});saveAll();renderLatest();if(document.getElementById('expensesContent').style.display!=='none')applyFilter('expenses');if(document.getElementById('incomeContent').style.display!=='none')applyFilter('income');applyYear('expenses');applyYear('income');form.reset();document.getElementById('entryType').value='';document.getElementById('entryDate').value=new Date().toISOString().split('T')[0];});
+function loginSection(section){if(section==='expenses'){const u=document.getElementById('expUsername').value.trim();const p=document.getElementById('expPassword').value;if(u===credExp.user&&p===credExp.pass){document.getElementById('expensesLogin').style.display='none';document.getElementById('expensesContent').style.display='block';applyFilter('expenses');applyYear('expenses');document.getElementById('expLoginMsg').textContent='';} else document.getElementById('expLoginMsg').textContent='❌ Wrong credentials';} else {const u=document.getElementById('incUsername').value.trim();const p=document.getElementById('incPassword').value;if(u===credInc.user&&p===credInc.pass){document.getElementById('incomeLogin').style.display='none';document.getElementById('incomeContent').style.display='block';applyFilter('income');applyYear('income');document.getElementById('incLoginMsg').textContent='';} else document.getElementById('incLoginMsg').textContent='❌ Wrong credentials';}}
+function applyFilter(section){if(section==='expenses'){const start=document.getElementById('expStart').value||null;const end=document.getElementById('expEnd').value||null;renderSummaryTable('expenses',start,end);} else {const start=document.getElementById('incStart').value||null;const end=document.getElementById('incEnd').value||null;renderSummaryTable('income',start,end);}}
+function renderSummaryTable(section,start=null,end=null){const tableBody=document.querySelector(`#${section}Table tbody`);tableBody.innerHTML='';const list=(section==='expenses'?expenses:incomes);let total=0;const filtered=list.filter(it=>{if(start&&it.date<start)return false;if(end&&it.date>end)return false;return true;});filtered.forEach(it=>{const tr=document.createElement('tr');tr.innerHTML=`<td><strong>${it.date}</strong></td><td>${escapeHtml(it.desc)}</td><td><strong>₱${Number(it.amount).toFixed(2)}</strong></td>`;tableBody.appendChild(tr);total+=Number(it.amount);});const totalId=(section==='expenses'?'expensesTotal':'incomeTotal');document.getElementById(totalId).textContent=Number(total).toFixed(2);}
+function applyYear(section){const yearInput=(section==='expenses'?document.getElementById('expYear').value:document.getElementById('incYear').value);renderYearly(section,yearInput?String(yearInput):null);}
+function clearYear(section){if(section==='expenses')document.getElementById('expYear').value='';else document.getElementById('incYear').value='';renderYearly(section,null);}
+function renderYearly(section,yearFilter=null){const tbody=document.querySelector(`#${section}Yearly tbody`);tbody.innerHTML='';const list=(section==='expenses'?expenses:incomes);const months=['January','February','March','April','May','June','July','August','September','October','November','December'];let grandTotal=0,grandCount=0;months.forEach((m,idx)=>{const mm=String(idx+1).padStart(2,'0');const filtered=list.filter(it=>{const [y,mo]=it.date.split('-');if(yearFilter&&y!==String(yearFilter))return false;return mo===mm;});const total=filtered.reduce((s,it)=>s+Number(it.amount),0);const count=filtered.length;grandTotal+=total;grandCount+=count;const tr=document.createElement('tr');tr.innerHTML=`<td><strong>${m}</strong></td><td><strong>₱${Number(total).toFixed(2)}</strong></td><td>${count}</td><td>₱${Number(count? total/count : 0).toFixed(2)}</td>`;tbody.appendChild(tr);});const trTotal=document.createElement('tr');trTotal.style.fontWeight='700';trTotal.style.background='linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 20%)';trTotal.style.color='#fff';trTotal.innerHTML=`<td><strong>🎯 TOTAL</strong></td><td><strong>₱${Number(grandTotal).toFixed(2)}</strong></td><td><strong>${grandCount}</strong></td><td><strong>₱${Number(grandCount? grandTotal/grandCount : 0).toFixed(2)}</strong></td>`;tbody.appendChild(trTotal);}
+function copyTable(section){const wrapId=(section==='expenses'?'expensesTable':'incomeTable');const table=document.getElementById(wrapId);const rows=table.querySelectorAll('tr');const lines=[];rows.forEach(r=>{const cols=r.querySelectorAll('th,td');const vals=[];cols.forEach(c=>{let txt=c.innerText.replace(/₱/g,'').trim();txt=txt.replace(/\\\"/g,'"');vals.push('"'+txt.replace(/\"/g,'""')+'"');});if(vals.length)lines.push(vals.join('\t'));});navigator.clipboard.writeText(lines.join('\n')).then(()=>alert('✅ Table copied! Paste into Excel/Sheets.'));}
+function escapeHtml(s){return String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
+renderLatest();renderSummaryTable('expenses');renderSummaryTable('income');renderYearly('expenses');renderYearly('income');
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js');navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window._reloadedOnce){window._reloadedOnce=true;location.reload();}});}
 </script>
 </body>
 </html>
